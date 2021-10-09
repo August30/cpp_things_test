@@ -1,46 +1,84 @@
-#include <iostream>
+/*
+explicit作用:
 
+在C++中，explicit关键字用来修饰类的构造函数，被修饰的构造函数的类，不能发生相应的隐式类型转换，只能以显示的方式进行类型转换。
+
+explicit使用注意事项:
+
+    *
+
+      explicit 关键字只能用于类内部的构造函数声明上。
+
+    *
+
+      explicit 关键字作用于单个参数的构造函数。
+
+    * 在C++中，explicit关键字用来修饰类的构造函数，被修饰的构造函数的类，不能发生相应的隐式类型转换
+*/
+#include <iostream>
 using namespace std;
 
-struct A
-{
-    A(int) { }
-    operator bool() const { return true; }
-};
+// 例子：
+// 未加explicit时的隐式类型转换
+/*
+class Circle  
+ {  
+ public:  
+    Circle(double r) : R(r) {}  
+    Circle(int x, int y = 0) : X(x), Y(y) {}  
+    Circle(const Circle& c) : R(c.R), X(c.X), Y(c.Y) {}  
+ private:  
+     double R;  
+     int    X;  
+     int    Y;  
+ };  
+ int main()  
+ {  
+ //发生隐式类型转换  
+ //编译器会将它变成如下代码  
+ //tmp = Circle(1.23)  
+ //Circle A(tmp);  
+ //tmp.~Circle();  
+     Circle A = 1.23;   
+ //注意是int型的，调用的是Circle(int x, int y = 0)  
+ //它虽然有2个参数，但后一个有默认值，任然能发生隐式转换  
+     Circle B = 123;  
+  //这个算隐式调用了拷贝构造函数  
+     Circle C = A;  
+       
+     return 0;  
+ } 
+ */
 
-struct B
-{
-    explicit B(int) {}
-    explicit operator bool() const { return true; }
-};
-
-void doA(A a) {}
-
-void doB(B b) {}
-
-int main()
-{
-    A a1(1);        // OK：直接初始化
-    A a2 = 1;        // OK：复制初始化
-    A a3{ 1 };        // OK：直接列表初始化
-    A a4 = { 1 };        // OK：复制列表初始化
-    A a5 = (A)1;        // OK：允许 static_cast 的显式转换 
-    doA(1);            // OK：允许从 int 到 A 的隐式转换
-    if (a1);        // OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a6(a1);        // OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a7 = a1;        // OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-    bool a8 = static_cast<bool>(a1);  // OK ：static_cast 进行直接初始化
-
-    B b1(1);        // OK：直接初始化
-//    B b2 = 1;        // 错误：被 explicit 修饰构造函数的对象不可以复制初始化
-    B b3{ 1 };        // OK：直接列表初始化
-//    B b4 = { 1 };        // 错误：被 explicit 修饰构造函数的对象不可以复制列表初始化
-    B b5 = (B)1;        // OK：允许 static_cast 的显式转换
-//    doB(1);            // 错误：被 explicit 修饰构造函数的对象不可以从 int 到 B 的隐式转换
-    if (b1);        // OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
-    bool b6(b1);        // OK：被 explicit 修饰转换函数 B::operator bool() 的对象可以从 B 到 bool 的按语境转换
-//    bool b7 = b1;        // 错误：被 explicit 修饰转换函数 B::operator bool() 的对象不可以隐式转换
-    bool b8 = static_cast<bool>(b1);  // OK：static_cast 进行直接初始化
-
-    return 0;
-}
+ // 加了explicit关键字后，可防止以上隐式类型转换发生
+class Circle  
+{  
+ public:  
+     explicit Circle(double r) : R(r) {}  
+     explicit Circle(int x, int y = 0) : X(x), Y(y) {}  
+     explicit Circle(const Circle& c) : R(c.R), X(c.X), Y(c.Y) {}  
+ private:  
+     double R;  
+     int    X;  
+     int    Y;  
+};  
+   
+int main()  
+{  
+//一下3句，都会报错  
+//Circle A = 1.23;   
+//Circle B = 123;  
+//Circle C = A;  
+       
+//只能用显示的方式调用了  
+//未给拷贝构造函数加explicit之前可以这样  
+    //   Circle A = Circle(1.23);  
+    //   Circle B = Circle(123);  
+    //   Circle C = A;  
+ 
+//给拷贝构造函数加了explicit后只能这样了  
+      Circle A(1.23);  
+      Circle B(123);  
+      Circle C(A);  
+      return 0;  
+ } 
