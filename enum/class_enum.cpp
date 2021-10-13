@@ -15,6 +15,15 @@ private:
     const int SIZE;
 };
  
+class Person{
+public:
+    typedef enum {
+        BOY = 0,
+        GIRL
+    }SexType;
+};
+//访问的时候通过，Person::BOY或者Person::GIRL来进行访问。
+
 int main()
 {
     A  a(100); // 对象 a 的 SIZE 值为 100 
