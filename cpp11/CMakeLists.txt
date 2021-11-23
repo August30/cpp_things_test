@@ -4,7 +4,7 @@ project(cpp11 VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-add_executable(cpp11 move.cpp)
+add_executable(cpp11 tuple.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
